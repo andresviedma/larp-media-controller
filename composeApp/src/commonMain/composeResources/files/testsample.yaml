@@ -1,0 +1,72 @@
+# File with a little sample of what you can do to describe the LARP and the devices.
+# You can copy this file as "test.yaml" to have a simple file to test with.
+# See larpmodel.kt to see all the whole model that can be represented.
+metadata:
+  name: My LARP title
+
+devices:
+  music:
+    # Directory with the music.
+    # It can be overridden for a specific platform in a test-android.yaml or test-java.yaml file.
+    files: "/xxx/xxx"
+  sound:
+    # Directory with the sound files. It can be overridden for a specific platform.
+    files: "/xxx/xxx"
+  yeelight:
+    bulbs:
+      - id: mybulb1 # Identifier to be used in this file when referring to this light
+        name: "My bulb 1"
+        deviceId: 0x0000000009999999 # Device ID for the bulb, you need to get it from
+      - id: foco1
+        name: Foco1
+        deviceId: 0x0000000007fb1c4f
+  projector:
+    ssh:
+      host: raspberrypi.local
+      port: 22
+      userName: pi
+      password: raspberry
+    defaultSoundOutput: HDMI
+    musicFiles: "music"
+    videoFiles: "videos"
+    disabled: false
+
+presets:
+  silentwhite:
+    lightcolors:
+      mybulb1: 0xffffff
+      mybulb2: 0xffffff
+    music:
+      off: true
+
+  dream:
+    lightcolors:
+      mybulb1: 0x0000ff
+      mybulb2: 0x0000ff
+    music:
+      file: "mymusic.mp3"
+
+scenes:
+  - number: 1
+    title: "Scene 1"
+    description: |
+      Whatever you need to see about this scene, written in **Markdown**.
+      
+      **Events**:
+      1. First event
+      2. Second event
+
+    settings:
+      preset: silentwhite
+      music:
+        file: "scene1.mp3"
+      remoteVideo:
+        file: "opening5.mp4"
+
+    actions:
+      gotodream:
+        text: "Dream"
+        settings:
+          preset: dream
+          sound:
+            file: "dreamstart.mp3"
