@@ -127,6 +127,7 @@ for old versions of the Raspberry PI. All the other video players I've tried run
 sudo apt-get install ffmpeg
 ```
 Although a different version (still to be decided if better) is using also omxplayer for this.
+
 7. You can try everything by connecting the Raspberry PI to a screen or projector and run commands like:
 ```bash
 ffplay -v 0 -nodisp -autoexit <audio file>
