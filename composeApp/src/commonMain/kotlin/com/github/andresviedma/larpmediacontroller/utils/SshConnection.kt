@@ -1,6 +1,5 @@
-package com.github.andresviedma.larpmediacontroller.projector
+package com.github.andresviedma.larpmediacontroller.utils
 
-import com.github.andresviedma.larpmediacontroller.runLoggingError
 import com.jcraft.jsch.ChannelExec
 import com.jcraft.jsch.JSch
 import com.jcraft.jsch.Session
@@ -14,7 +13,7 @@ class SshConnection(
     private val host: String,
     private val port: Int
 ) {
-    constructor(config: ProjectorSshConfig) : this(
+    constructor(config: SshConfig) : this(
         username = config.userName,
         password = config.password,
         host = config.host,

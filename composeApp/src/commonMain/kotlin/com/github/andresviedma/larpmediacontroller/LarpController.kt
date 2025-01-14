@@ -3,6 +3,7 @@ package com.github.andresviedma.larpmediacontroller
 import com.github.andresviedma.larpmediacontroller.gui.getPlatform
 import com.github.andresviedma.larpmediacontroller.lights.LightsController
 import com.github.andresviedma.larpmediacontroller.projector.ProjectorController
+import com.github.andresviedma.larpmediacontroller.projector.omxplayer.OmxPlayerProjectorController
 import com.github.andresviedma.larpmediacontroller.sound.MusicController
 import com.github.andresviedma.larpmediacontroller.sound.MusicControllerConfig
 import com.github.andresviedma.larpmediacontroller.sound.SoundController
@@ -160,9 +161,9 @@ class LarpController private constructor(
                 )
             )
             val projector = larp.devices.projector?.takeIf { !it.disabled }
-            remoteVideoController = projector?.let { ProjectorController("video", it) }
-            remoteMusicController = projector?.let { ProjectorController("music", it) }
-            remoteSoundController = projector?.let { ProjectorController("sound", it) }
+            remoteVideoController = projector?.let { OmxPlayerProjectorController("video", it) }
+            remoteMusicController = projector?.let { OmxPlayerProjectorController("music", it) }
+            remoteSoundController = projector?.let { OmxPlayerProjectorController("sound", it) }
 
             loaded = true
         }

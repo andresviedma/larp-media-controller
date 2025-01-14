@@ -1,10 +1,11 @@
 package com.github.andresviedma.larpmediacontroller.projector
 
+import com.github.andresviedma.larpmediacontroller.utils.SshConfig
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class ProjectorMediaConfig(
-    val ssh: ProjectorSshConfig,
+    val ssh: SshConfig,
     val defaultSoundOutput: ProjectorSoundOutput = ProjectorSoundOutput.HDMI,
     val musicFiles: String? = null,
     val videoFiles: String? = null,
@@ -30,14 +31,6 @@ enum class ProjectorSoundOutput {
 @Serializable
 data class MusicControllerConfig(
     val files: String? = null
-)
-
-@Serializable
-data class ProjectorSshConfig(
-    val host: String = "raspberrypi.local",
-    val port: Int = 22,
-    val userName: String = "pi",
-    val password: String = "raspberry"
 )
 
 @Serializable

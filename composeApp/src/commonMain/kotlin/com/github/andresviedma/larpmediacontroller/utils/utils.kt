@@ -1,4 +1,4 @@
-package com.github.andresviedma.larpmediacontroller
+package com.github.andresviedma.larpmediacontroller.utils
 
 import io.github.oshai.kotlinlogging.KLogger
 
