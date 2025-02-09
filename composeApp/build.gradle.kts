@@ -41,7 +41,12 @@ kotlin {
 
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.yamlkt)
+            implementation(libs.ktor.client.auth)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.http.client)
             implementation(libs.ktor.network)
+            implementation(libs.ktor.serialization.kotlinx.xml)
             implementation(libs.korge.core)
             implementation(libs.markdown.renderer)
             // Offers Material 3 defaults for Material 3 themed apps (com.mikepenz.markdown.m3.Markdown)

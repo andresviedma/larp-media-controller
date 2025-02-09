@@ -94,7 +94,47 @@ a new initialization)
 We are using [Korge](https://korge.org/) for the sound player. It's multiplatform, so it should
 work on every platform. It has been tested with Desktop (Mac) and Android.
 
-### Remote projector / music
+### Remote projector (Raspberry Pi 3+)
+
+We will use a Raspberry PI 3+ with Raspberry OS installed. This OS has VLC player included, we will use
+its HTTP interface to send commands to play the videos locally, which will be copied to the PI machine.
+
+On installation, make sure to:
+* Enable the SSH interface and set the WiFi configuration.
+* Using the GUI, make sure that the sound is directed to HDMI and/or the jack output as desired, and the volume is set to maximum level.
+* Using the GUI, make sure in Raspberry Pi configuration that the screen blanking is disabled (it is disabled by default)
+* Set black colour with no image as desktop background
+
+Once everything installed and set up, in the Blackberry PI machine:
+
+1. In `$HOME/.config/autostart` create a new file `vlc.desktop` with this content:
+```
+[Desktop Entry]
+Type=Application
+Exec=/usr/bin/cvlc --extraintf http --http-password x --fullscreen --no-video-deco --no-video-title-show --image-duration=86400 &
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name=VLCBack
+```
+This will make sure that VLC is run on startup, with HTTP interface enabled (using "x" as password).
+
+2. Create a black image with a small size, e.g. 800x600. Save it as `black.png`
+```bash
+sudo apt-get install imagemagick
+magick -size 800x600 xc:black black.png
+```
+3. Create a video with this image, running:
+```bash
+sudo apt-get install ffmpeg
+ffmpeg -loop 1 -i black.png -t 01:00:00 black.mp4
+```
+4. Copy `black.png` and `black.mp4` to $HOME folder in the Pi machine.
+These files will be used as black background when no video is playing.
+You can copy the files using `scp`, with command line or a GUI like Filezilla (port 22).
+5. In the same way, copy all the video files of the LARP to a directory.
+
+### Remote projector / music (Raspberry Pi 1/2)
 
 We are using a Raspberry PI receiving commands from the controller device using SSH and connected
 to a projector via HDMI and to some speakers if we also want sound.
@@ -104,8 +144,8 @@ which does not include a graphical environment. You can find it for
 [arm 64 (newer Raspberrys)](https://downloads.raspberrypi.org/raspios_arm64/images/raspios_arm64-2021-05-28/) or for
 [armhf (older Raspberrys)](https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2023-05-03/).
 
-We want to install a version so old of the Raspberry OS because we'll need to use OMXPlayer and it only works in those
-versions.
+We want to install a version of the Raspberry OS so old because we are going to use OMXPlayer, a video
+player highly optimized for old Pi models, and it only works in those versions.
 
 Once installed, follow these instructions:
 1. Start the Raspberry PI, connected to some screen and keyboard, and finish the installation.

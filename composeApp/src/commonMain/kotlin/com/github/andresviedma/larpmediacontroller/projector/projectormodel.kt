@@ -10,6 +10,7 @@ data class ProjectorMediaConfig(
     val musicFiles: String? = null,
     val videoFiles: String? = null,
     val disabled: Boolean = true,
+    val vlc: VlcConfig? = null, // if not null, VLC will be used instead of OMX player
 ) {
     inline val mutedOutputIdentifier: String get() =
         defaultSoundOutput.opposite.commandIdentifier
@@ -17,6 +18,13 @@ data class ProjectorMediaConfig(
     inline val defaultOutputIdentifier: String get() =
         defaultSoundOutput.commandIdentifier
 }
+
+@Serializable
+data class VlcConfig(
+    val port: Int = 8080,
+    val userName: String = "",
+    val password: String = "x",
+)
 
 @Serializable
 enum class ProjectorSoundOutput {

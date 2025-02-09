@@ -20,7 +20,7 @@ kotlinx-serialization = "1.7.1"
 korge-core = "5.1.0"
 kotlin-logging = "7.0.0"
 jsch = "0.1.55"
-ktor-network = "2.3.12"
+ktor = "2.3.12"
 markdown-renderer = "0.25.0"
 slf4j = "1.7.36"
 yamlkt = "0.13.0"
@@ -46,7 +46,14 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 jsch = "com.jcraft:jsch:0.1.55"
 korge-core = "com.soywiz.korge:korge-core:5.1.0"
 kotlin-logging = "io.github.oshai:kotlin-logging:7.0.0"
-ktor-network = "io.ktor:ktor-network:2.3.12"
+
+ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref = "ktor" }
+ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
+ktor-http-client = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
+ktor-network = { group = "io.ktor", name = "ktor-network", version.ref = "ktor" }
+ktor-serialization-kotlinx-xml = { group = "io.ktor", name = "ktor-serialization-kotlinx-xml", version.ref = "ktor" }
+
 markdown-renderer = "com.mikepenz:multiplatform-markdown-renderer:0.25.0"
 markdown-renderer-m2 = "com.mikepenz:multiplatform-markdown-renderer-m2:0.25.0"
 slf4j-api = "org.slf4j:slf4j-api:1.7.36"

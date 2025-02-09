@@ -3,7 +3,9 @@ package com.github.andresviedma.larpmediacontroller
 import com.github.andresviedma.larpmediacontroller.gui.getPlatform
 import com.github.andresviedma.larpmediacontroller.lights.LightsController
 import com.github.andresviedma.larpmediacontroller.projector.ProjectorController
+import com.github.andresviedma.larpmediacontroller.projector.ProjectorMediaConfig
 import com.github.andresviedma.larpmediacontroller.projector.omxplayer.OmxPlayerProjectorController
+import com.github.andresviedma.larpmediacontroller.projector.vlc.VlcProjectorController
 import com.github.andresviedma.larpmediacontroller.sound.MusicController
 import com.github.andresviedma.larpmediacontroller.sound.MusicControllerConfig
 import com.github.andresviedma.larpmediacontroller.sound.SoundController
@@ -160,14 +162,21 @@ class LarpController private constructor(
                     files = larp.devices.sound?.files
                 )
             )
-            val projector = larp.devices.projector?.takeIf { !it.disabled }
-            remoteVideoController = projector?.let { OmxPlayerProjectorController("video", it) }
-            remoteMusicController = projector?.let { OmxPlayerProjectorController("music", it) }
-            remoteSoundController = projector?.let { OmxPlayerProjectorController("sound", it) }
+            larp.devices.projector?.takeIf { !it.disabled }?.let {
+                remoteVideoController = projectorController("video", it)
+                remoteMusicController = projectorController("music", it)
+                remoteSoundController = projectorController("sound", it)
+            }
 
             loaded = true
         }
     }
+
+    private fun projectorController(name: String, config: ProjectorMediaConfig): ProjectorController =
+        when {
+            config.vlc != null -> VlcProjectorController(name, config)
+            else -> OmxPlayerProjectorController(name, config)
+        }
 
     private suspend fun loadLarpInfo() {
         val (baseDir, yaml) = if (larpFileName.contains('/')) {
