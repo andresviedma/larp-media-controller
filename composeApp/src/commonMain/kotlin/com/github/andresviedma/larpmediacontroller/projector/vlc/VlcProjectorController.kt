@@ -28,8 +28,8 @@ class VlcProjectorController(
         logger.runLoggingError {
             playMutex.withLock {
                 vlc.clearQueue()
-                val status = vlc.play(BLACK_LOOPED_IMG)
-                setLoopAndMute(status, loop = true, mute = false)
+                // val status = vlc.play(BLACK_LOOPED_IMG)
+                // setLoopAndMute(status, loop = true, mute = false)
             }
         }
     }
@@ -41,6 +41,14 @@ class VlcProjectorController(
     override suspend fun shutdown() {
         if (ssh == null) return
         logger.runLoggingError { ssh.runCommand("sudo shutdown now") }
+    }
+
+    suspend fun restartVlc() {
+        if (ssh == null) return
+        logger.runLoggingError {
+            ssh.stopAll("vlc")
+            ssh.runCommand("./config/autostart/vlcserver.sh")
+        }
     }
 
     override suspend fun play(video: RemoteVideoPlayback) {
@@ -70,7 +78,7 @@ class VlcProjectorController(
                 if (loop) {
                     setLoopAndMute(status, true, silent)
                 } else {
-                    vlc.enqueue(BLACK_VIDEO)
+                    // vlc.enqueue(BLACK_VIDEO)
                     setLoopAndMute(status, false, silent)
                 }
             }
