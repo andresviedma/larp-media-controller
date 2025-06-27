@@ -51,17 +51,20 @@ fun MusicSelectorView(larpController: LarpController) {
         Column(modifier = Modifier.padding(0.dp).verticalScroll(rememberScrollState())) {
             larpController.larp.getAllMusicPlaybacks()
                 .filter { it.file != null }
+                .distinctBy { it.file }
                 .map { it.file!!.substringBeforeLast('.') to it }
                 .sortedBy { (fileName, _) -> fileName }
                 .forEach { (fileName, playback) ->
-                    Text(
-                        text = fileName,
-                        modifier = Modifier.clickable(
-                            onClick = {
-                                asyncLauncher.launch { larpController.musicController.play(playback) }
-                            }
-                        ).padding(10.dp).fillMaxWidth()
-                    )
+                    Row {
+                        Text(
+                            text = fileName,
+                            modifier = Modifier.clickable(
+                                onClick = {
+                                    asyncLauncher.launch { larpController.musicController.play(playback) }
+                                }
+                            ).padding(10.dp).fillMaxWidth()
+                        )
+                    }
                     Divider()
                 }
         }

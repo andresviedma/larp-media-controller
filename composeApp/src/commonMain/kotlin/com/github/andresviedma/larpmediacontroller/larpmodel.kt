@@ -24,6 +24,11 @@ data class Larp(
         presets.values.mapNotNull { it.music } +
             scenes.mapNotNull { it.settings?.music } +
             scenes.flatMap { it.actions.values.mapNotNull { action -> action.settings?.music } }
+
+    fun getAllVideoPlaybacks(): List<RemoteVideoPlayback> =
+        presets.values.mapNotNull { it.remoteVideo } +
+                scenes.mapNotNull { it.settings?.remoteVideo } +
+                scenes.flatMap { it.actions.values.mapNotNull { action -> action.settings?.remoteVideo } }
 }
 
 @Serializable

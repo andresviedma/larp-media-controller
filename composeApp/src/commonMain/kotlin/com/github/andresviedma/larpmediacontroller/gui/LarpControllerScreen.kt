@@ -70,6 +70,10 @@ fun LarpControllerScreen(larpController: LarpController) {
     if (musicDialogShown.value) {
         MusicSelectorDialog(larpController, musicDialogShown)
     }
+    val videoDialogShown = remember { mutableStateOf(false) }
+    if (videoDialogShown.value) {
+        ProjectorDialog(larpController, videoDialogShown)
+    }
 
     MaterialTheme {
         val scaffoldState = rememberScaffoldState()
@@ -91,6 +95,11 @@ fun LarpControllerScreen(larpController: LarpController) {
                         }
                         DrawerButton("Música", Icons.Default.PlayArrow) {
                             musicDialogShown.value = true
+                        }
+                        larpController.remoteVideoController?.let {
+                            DrawerButton("Vídeos", Icons.Default.PlayArrow) {
+                                videoDialogShown.value = true
+                            }
                         }
                         DrawerButton("Presets", Icons.Default.Settings) {
                             presetsDialogShown.value = true
