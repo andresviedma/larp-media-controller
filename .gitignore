@@ -20,3 +20,4 @@ KkTest.kt
 /composeApp/src/commonMain/composeResources/files/test.yaml
 /composeApp/src/commonMain/composeResources/files/test-android.yaml
 /composeApp/src/commonMain/composeResources/files/test-java.yaml
+.local/

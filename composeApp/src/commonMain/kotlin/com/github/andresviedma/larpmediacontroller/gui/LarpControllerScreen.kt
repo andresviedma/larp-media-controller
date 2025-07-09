@@ -74,6 +74,10 @@ fun LarpControllerScreen(larpController: LarpController) {
     if (videoDialogShown.value) {
         ProjectorDialog(larpController, videoDialogShown)
     }
+    val serverDialogShown = remember { mutableStateOf(false) }
+    if (serverDialogShown.value) {
+        ProjectorControlDialog(larpController, serverDialogShown)
+    }
 
     MaterialTheme {
         val scaffoldState = rememberScaffoldState()
@@ -107,6 +111,11 @@ fun LarpControllerScreen(larpController: LarpController) {
                         Divider()
                         Row(modifier = Modifier.height(40.dp)) {}
                         Divider()
+                        if (larpController.remoteVideoController != null) {
+                            DrawerButton("Proyector") {
+                                serverDialogShown.value = true
+                            }
+                        }
                         larpController.remoteVideoController?.let {
                             DrawerButton("Proyector: apagar") {
                                 asyncLauncher.launch { it.shutdown() }

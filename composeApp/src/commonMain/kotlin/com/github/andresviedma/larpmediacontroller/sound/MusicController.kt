@@ -61,9 +61,6 @@ class MusicController(
                     val file = base[music.file]
                     if (!file.exists()) {
                         logger.warn { "File not found: ${music.file}" }
-                        println("${vfs.exists()} - ${vfs.absolutePath}")
-                        println("${base.exists()} - ${base.absolutePath}")
-                        println("${file.exists()} - ${file.absolutePath}")
                     } else {
                         logger.info { "Playing ${music.file}..." }
                         val sound = file.readMusic()

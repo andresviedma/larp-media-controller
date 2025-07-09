@@ -6,6 +6,8 @@ import com.jcraft.jsch.Session
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
+import java.io.OutputStream
 
 class SshConnection(
     private val username: String,
@@ -25,15 +27,26 @@ class SshConnection(
     private val logger = KotlinLogging.logger {}
 
     suspend fun runCommand(command: String) {
+        runCommandWithOutStream(command)
+    }
+
+    private suspend fun runCommandWithOutStream(command: String, out: OutputStream = System.out) {
         withContext(Dispatchers.IO) {
             synchronized(this) {
-                withChannel { commandChannel ->
+                withChannel(out) { commandChannel ->
                     commandChannel.setCommand(command)
                     commandChannel.connect()
                     logger.info { "Sent command: $command" }
                 }
             }
         }
+    }
+
+    suspend fun runCommandAndGetOutput(command: String): String {
+        val out = ByteArrayOutputStream()
+        runCommandWithOutStream(command, out)
+        waitForLastCommand()
+        return out.toString(Charsets.UTF_8)
     }
 
     suspend fun stopLastCommand() {
@@ -55,8 +68,8 @@ class SshConnection(
     suspend fun waitForLastCommand() {
         withContext(Dispatchers.IO) {
             synchronized(this) {
-                if (lastChannel != null) {
-                    while (lastChannel!!.isConnected()) {
+                lastChannel?.let { channel ->
+                    while (channel.isConnected()) {
                         Thread.sleep(100)
                     }
                     lastChannel = null
@@ -73,12 +86,12 @@ class SshConnection(
         }
     }
 
-    private fun <T> withChannel(block: (ChannelExec) -> T): T {
+    private fun <T> withChannel(out: OutputStream = System.out, block: (ChannelExec) -> T): T {
         if (session?.isConnected == false) disconnect()
         if (session == null) connect()
         return disconnectIfFails {
             lastChannel = session!!.openChannel("exec") as ChannelExec
-            lastChannel!!.outputStream = System.out
+            lastChannel!!.outputStream = out
 
             block(lastChannel!!)
         }

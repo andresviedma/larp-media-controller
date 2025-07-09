@@ -4,8 +4,12 @@ import com.github.andresviedma.larpmediacontroller.projector.ProjectorController
 import com.github.andresviedma.larpmediacontroller.projector.ProjectorMediaConfig
 import com.github.andresviedma.larpmediacontroller.projector.RemoteVideoPlayback
 import com.github.andresviedma.larpmediacontroller.sound.MusicPlayback
+import com.github.andresviedma.larpmediacontroller.utils.ServerStatus
 import com.github.andresviedma.larpmediacontroller.utils.SshConnection
+import com.github.andresviedma.larpmediacontroller.utils.getServerStatus
+import com.github.andresviedma.larpmediacontroller.utils.reboot
 import com.github.andresviedma.larpmediacontroller.utils.runLoggingError
+import com.github.andresviedma.larpmediacontroller.utils.shutdown
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -39,15 +43,17 @@ class VlcProjectorController(
     }
 
     override suspend fun shutdown() {
-        if (ssh == null) return
-        logger.runLoggingError { ssh.runCommand("sudo shutdown now") }
+        ssh?.shutdown()
+    }
+    override suspend fun reboot() {
+        ssh?.reboot()
     }
 
-    suspend fun restartVlc() {
+    override suspend fun restartService() {
         if (ssh == null) return
         logger.runLoggingError {
             ssh.stopAll("vlc")
-            ssh.runCommand("./config/autostart/vlcserver.sh")
+            ssh.runCommand("nohup /home/pi/.config/autostart/vlcserver.sh &")
         }
     }
 
@@ -57,6 +63,8 @@ class VlcProjectorController(
                 logger.info { "$name: Playing video $it" }
                 playFile(videoPath(it), video.loop, video.silent)
             }
+        } else {
+            reset()
         }
     }
 
@@ -68,6 +76,11 @@ class VlcProjectorController(
             }
         }
     }
+
+    override suspend fun getServerStatus(): ServerStatus =
+        ssh!!.getServerStatus().copy(
+            serviceConnected = runCatching { vlc.getStatus(); true }.getOrDefault(false)
+        )
 
     private suspend fun playFile(path: String, loop: Boolean, silent: Boolean) {
         logger.runLoggingError {

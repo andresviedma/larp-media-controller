@@ -6,7 +6,11 @@ import com.github.andresviedma.larpmediacontroller.projector.RemoteVideoPlayback
 import com.github.andresviedma.larpmediacontroller.utils.runLoggingError
 import com.github.andresviedma.larpmediacontroller.sound.MusicPlayback
 import com.github.andresviedma.larpmediacontroller.sound.SoundPlayback
+import com.github.andresviedma.larpmediacontroller.utils.ServerStatus
 import com.github.andresviedma.larpmediacontroller.utils.SshConnection
+import com.github.andresviedma.larpmediacontroller.utils.getServerStatus
+import com.github.andresviedma.larpmediacontroller.utils.reboot
+import com.github.andresviedma.larpmediacontroller.utils.shutdown
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.io.File
 
@@ -34,8 +38,10 @@ class OmxPlayerProjectorController(
     }
 
     override suspend fun shutdown() {
-        if (ssh == null) return
-        logger.runLoggingError { ssh.runCommand("sudo shutdown now") }
+        ssh?.shutdown()
+    }
+    override suspend fun reboot() {
+        ssh?.reboot()
     }
 
     override suspend fun play(video: RemoteVideoPlayback) {
@@ -69,6 +75,9 @@ class OmxPlayerProjectorController(
         val path = File(projectorMediaConfig.musicFiles.orEmpty(), sound.file).path
         runSshCommand(file = path, loop = false, muted = false, retry = true)
     }
+
+    override suspend fun getServerStatus(): ServerStatus =
+        ssh!!.getServerStatus()
 
     private suspend fun runSshCommand(file: String, loop: Boolean, muted: Boolean, retry: Boolean = false) {
         // *** Unused flags:

@@ -1,9 +1,11 @@
 package com.github.andresviedma.larpmediacontroller.projector.vlc
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpRequestRetry
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
 import io.ktor.client.plugins.auth.providers.basic
@@ -19,6 +21,9 @@ import nl.adaptivity.xmlutil.serialization.XmlConfig.Companion.IGNORING_UNKNOWN_
 import nl.adaptivity.xmlutil.serialization.XmlElement
 import nl.adaptivity.xmlutil.serialization.XmlSerialName
 import java.io.Closeable
+import java.io.IOException
+
+private val logger = KotlinLogging.logger {}
 
 @OptIn(ExperimentalXmlUtilApi::class)
 class VlcApi(
@@ -27,7 +32,7 @@ class VlcApi(
     val userName: String = "",
     val password: String = "x",
 ) : Closeable {
-    private val client: HttpClient = createClient()
+    private var client: HttpClient = createClient()
 
     suspend fun getStatus(): VlcStatus =
         sendCommand(null)
@@ -48,6 +53,15 @@ class VlcApi(
     }
 
     suspend fun sendCommand(command: String?, input: String? = null, value: Any? = null): VlcStatus =
+        try {
+            sendHttpCommand(command, input, value)
+        } catch (_: IOException) {
+            // retry with a new client if the network changed (should not be necessary, but just in case)
+            client = createClient()
+            sendHttpCommand(command, input, value)
+        }
+
+    private suspend fun sendHttpCommand(command: String?, input: String? = null, value: Any? = null): VlcStatus =
         client.get("http://$host:$port/requests/status.xml") {
             command?.let { parameter("command", it) }
             input?.let { parameter("input", it) }
@@ -57,6 +71,11 @@ class VlcApi(
     private fun createClient() = let { self ->
         HttpClient(CIO) {
             expectSuccess = true
+
+            install(HttpTimeout) {
+                connectTimeoutMillis = 1000
+                requestTimeoutMillis = 3000
+            }
 
             install(ContentNegotiation) {
                 xml(
