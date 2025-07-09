@@ -78,9 +78,12 @@ class VlcProjectorController(
     }
 
     override suspend fun getServerStatus(): ServerStatus =
-        ssh!!.getServerStatus().copy(
-            serviceConnected = runCatching { vlc.getStatus(); true }.getOrDefault(false)
-        )
+        ssh!!.getServerStatus().let {
+            it.copy(
+                serviceConnected = it.serverConnected &&
+                        runCatching { vlc.getStatus(); true }.getOrDefault(false)
+            )
+        }
 
     private suspend fun playFile(path: String, loop: Boolean, silent: Boolean) {
         logger.runLoggingError {

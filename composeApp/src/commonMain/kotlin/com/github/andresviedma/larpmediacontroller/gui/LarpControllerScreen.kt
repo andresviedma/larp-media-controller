@@ -116,11 +116,6 @@ fun LarpControllerScreen(larpController: LarpController) {
                                 serverDialogShown.value = true
                             }
                         }
-                        larpController.remoteVideoController?.let {
-                            DrawerButton("Proyector: apagar") {
-                                asyncLauncher.launch { it.shutdown() }
-                            }
-                        }
                     }
                 }
             },
