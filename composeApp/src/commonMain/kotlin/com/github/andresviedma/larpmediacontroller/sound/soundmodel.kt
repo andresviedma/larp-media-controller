@@ -14,7 +14,10 @@ data class MusicPlayback(
     val off: Boolean = false,
     val loop: Boolean = true,
     val afterMillis: Long? = null,
-)
+    val volume: Int? = null,
+) {
+    inline val effectiveVolumeLevel: Double get() = (volume ?: 100) / 100.0
+}
 
 @Serializable
 data class SoundControllerConfig(
@@ -24,7 +27,10 @@ data class SoundControllerConfig(
 @Serializable
 data class SoundPlayback(
     val file: String,
-)
+    val volume: Int? = null,
+) {
+    inline val effectiveVolumeLevel: Double get() = (volume ?: 100) / 100.0
+}
 
 data class MusicPlaybackStatus(
     val hasCurrentMusic: Boolean = false,

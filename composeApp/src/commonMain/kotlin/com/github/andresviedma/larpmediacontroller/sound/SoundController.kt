@@ -3,6 +3,7 @@ package com.github.andresviedma.larpmediacontroller.sound
 import com.github.andresviedma.larpmediacontroller.DeviceController
 import com.github.andresviedma.larpmediacontroller.gui.getPlatform
 import io.github.oshai.kotlinlogging.KotlinLogging
+import korlibs.audio.sound.PlaybackParameters
 import korlibs.audio.sound.readSound
 
 class SoundController(
@@ -32,7 +33,11 @@ class SoundController(
             } else {
                 logger.info { "Playing ${soundFile.file}..." }
                 val sound = file.readSound(streaming = true) // Debería ser false, pero parece que no funciona en android ni en desktop
-                sound.play()
+                sound.play(
+                    PlaybackParameters(
+                        volume = soundFile.effectiveVolumeLevel,
+                    )
+                )
             }
         }
     }

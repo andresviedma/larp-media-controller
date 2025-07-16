@@ -64,7 +64,12 @@ class MusicController(
                     } else {
                         logger.info { "Playing ${music.file}..." }
                         val sound = file.readMusic()
-                        val channel = sound.play(PlaybackParameters(times = music.playbackTimes()))
+                        val channel = sound.play(
+                            PlaybackParameters(
+                                times = music.playbackTimes(),
+                                volume = music.effectiveVolumeLevel,
+                            )
+                        )
                         openChannel = channel
                         logger.info { "Played ${music.file} started OK" }
                     }
