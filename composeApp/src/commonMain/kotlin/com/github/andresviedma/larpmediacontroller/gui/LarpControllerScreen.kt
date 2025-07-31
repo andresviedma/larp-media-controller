@@ -4,6 +4,7 @@ package com.github.andresviedma.larpmediacontroller.gui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -44,6 +45,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.unit.dp
 import com.github.andresviedma.larpmediacontroller.LarpController
 import com.github.andresviedma.larpmediacontroller.LarpScene
@@ -82,7 +84,7 @@ fun LarpControllerScreen(larpController: LarpController) {
     MaterialTheme {
         val scaffoldState = rememberScaffoldState()
         Scaffold(
-            modifier = Modifier.padding(),
+            modifier = Modifier.padding().focusable().onPreviewKeyEvent { true },
             scaffoldState = scaffoldState,
             drawerContent = {
                 ModalDrawer(

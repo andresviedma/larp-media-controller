@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
 import android.util.Log
+import android.view.KeyEvent
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import korlibs.io.android.AndroidCoroutineContext
+import korlibs.io.async.launch
 
 class MainActivity : ComponentActivity() {
     private val storageActivityResultLauncher: ActivityResultLauncher<Intent> =
@@ -54,6 +56,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             App(AndroidCoroutineContext(this))
         }
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
+        asyncLauncher.launch {
+            triggerLarpKeyAction(keyCode)
+        }
+        return true
     }
 
     private val STORAGE_PERMISSION_CODE: Int = 23

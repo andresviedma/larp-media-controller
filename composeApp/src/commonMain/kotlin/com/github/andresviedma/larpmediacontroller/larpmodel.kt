@@ -14,6 +14,7 @@ import kotlinx.serialization.Serializable
 data class Larp(
     val metadata: LarpMetadata = LarpMetadata(),
     val devices: LarpDevicesConfig = LarpDevicesConfig(),
+    val shortcuts: Map<Int, String> = emptyMap(),
     val presets: Map<String, DevicesSettings> = emptyMap(),
     val scenes: List<LarpScene> = emptyList(),
 ) {
@@ -57,6 +58,7 @@ data class DevicesSettings(
     val lightcolors: Map<String, Int>? = null,
     val lightwhites: Map<String, Int>? = null, // white temperature, bright will always be 100%
     val lightsoff: List<String>? = null,
+    val lightson: List<String>? = null,
     val lightflows: Map<String, LightFlow>? = null,
     val music: MusicPlayback? = null,
     val remoteVideo: RemoteVideoPlayback? = null,
@@ -73,6 +75,7 @@ data class DevicesSettings(
         lightcolors = overrides.lightcolors ?: lightcolors,
         lightwhites = overrides.lightwhites ?: lightwhites,
         lightsoff = overrides.lightsoff ?: lightsoff,
+        lightson = overrides.lightson ?: lightson,
         lightflows = overrides.lightflows ?: lightflows,
         music = overrides.music ?: music,
         remoteVideo = overrides.remoteVideo ?: remoteVideo,

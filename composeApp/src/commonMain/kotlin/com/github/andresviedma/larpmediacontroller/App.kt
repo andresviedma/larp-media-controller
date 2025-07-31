@@ -22,9 +22,16 @@ fun App(coroutineContext: CoroutineContext = EmptyCoroutineContext) {
     val larpController = remember { mutableStateOf<LarpController?>(null) }
 
     if (larpController.value != null) {
+        globalLarpController = larpController.value
         // MusicPlayerView(larpController.value!!)
         LarpControllerScreen(larpController.value!!)
     } else {
         LarpSelectorScreen(LarpCatalog().getAvailableLarps(), larpLoading, larpController)
     }
+}
+
+private var globalLarpController: LarpController? = null
+
+suspend fun triggerLarpKeyAction(keyCode: Int): Boolean {
+    return globalLarpController?.shortcutAction(keyCode) ?: false
 }

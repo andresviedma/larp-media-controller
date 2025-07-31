@@ -52,6 +52,12 @@ class LightsController(
         }
     }
 
+    suspend fun onBulbs(bulbIds: Collection<String>) = ignoreErrors {
+        bulbIds.forEach {
+            getLightConnection(it)?.on()
+        }
+    }
+
     fun getLightConnection(bulbId: String): LightConnection? =
         lights.firstOrNull { it.bulb.id == bulbId }
 

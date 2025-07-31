@@ -1,6 +1,8 @@
 package com.github.andresviedma.larpmediacontroller
 
+import com.github.andresviedma.larpmediacontroller.gui.decreaseSystemVolume
 import com.github.andresviedma.larpmediacontroller.gui.getPlatform
+import com.github.andresviedma.larpmediacontroller.gui.increaseSystemVolume
 import com.github.andresviedma.larpmediacontroller.lights.LightsController
 import com.github.andresviedma.larpmediacontroller.projector.ProjectorController
 import com.github.andresviedma.larpmediacontroller.projector.ProjectorMediaConfig
@@ -55,6 +57,7 @@ class LarpController private constructor(
                     actualSettings?.music?.let { async { musicController.play(it) } },
                     async {
                         actualSettings?.lightsoff?.let { lightsController.offBulbs(it) }
+                        actualSettings?.lightson?.let { lightsController.onBulbs(it) }
                         actualSettings?.effectiveLightColors?.let { lightsController.setBulbColors(it) }
                         actualSettings?.lightwhites?.let { lightsController.setWhites(it) }
                         actualSettings?.lightflows?.let { lightsController.setBulbFlows(it) }
@@ -128,6 +131,33 @@ class LarpController private constructor(
                     runCatching { remoteVideoController?.off() }
                 }
             )
+        }
+    }
+
+    suspend fun shortcutAction(keyCode: Int): Boolean {
+        try {
+            val action = larp.shortcuts[keyCode] ?: return false
+            logger.info { "Shortcut $keyCode - action $action" }
+            when (action.trim()) {
+                "volume-up" -> increaseSystemVolume()
+                "volume-down" -> decreaseSystemVolume()
+                "playpause" -> musicController.togglePlay()
+                "end-of-scene" -> endOfScene()
+                "noop" -> {}
+
+                else -> {
+                    // Preset
+                    if (larp.presets.containsKey(action)) {
+                        runPresetSettings(action)
+                    } else {
+                        return false
+                    }
+                }
+            }
+            return true
+        } catch (exception: Exception) {
+            logger.error(exception) { "ERROR in shortcut: ${exception.message}" }
+            return false
         }
     }
 

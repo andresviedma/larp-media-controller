@@ -67,6 +67,10 @@ class LightConnection(
         getYeelightDevice()?.setPower(isOn = false)
     }
 
+    suspend fun on() {
+        getYeelightDevice()?.setPower(isOn = true)
+    }
+
     suspend fun detect(forceRefresh: Boolean = true) {
         yeelightDevice = null
         getYeelightDevice(forceRefresh)
