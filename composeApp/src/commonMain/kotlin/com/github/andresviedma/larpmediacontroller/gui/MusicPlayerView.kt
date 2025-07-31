@@ -1,6 +1,7 @@
 package com.github.andresviedma.larpmediacontroller.gui
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -13,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.github.andresviedma.larpmediacontroller.LarpController
 import com.github.andresviedma.larpmediacontroller.asyncLauncher
 import korlibs.time.seconds
@@ -37,7 +39,7 @@ fun MusicPlayerView(larpController: LarpController) {
     }
 
 //     Column {
-        Row {
+        Row(Modifier.width(200.dp)) {
             IconButton(
                 onClick = {
                     asyncLauncher.launch {
