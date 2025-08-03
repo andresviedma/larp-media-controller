@@ -16,7 +16,8 @@ data class MusicPlayback(
     val afterMillis: Long? = null,
     val volume: Int? = null,
 ) {
-    inline val effectiveVolumeLevel: Double get() = (volume ?: 100) / 100.0
+    inline val effectiveVolumeLevel: Double get() =
+        (volume ?: 100).coerceAtMost(100) / 100.0
 }
 
 @Serializable

@@ -75,6 +75,10 @@ class MusicController(
                     }
                 }
             }
+
+            (config.files != null && music.volume != null) -> {
+                openChannel?.volume = music.effectiveVolumeLevel
+            }
         }
     }
 
