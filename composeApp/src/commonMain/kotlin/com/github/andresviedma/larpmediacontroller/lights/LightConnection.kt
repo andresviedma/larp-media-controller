@@ -6,8 +6,6 @@ import com.github.omarmiatello.yeelight.FlowSleep
 import com.github.omarmiatello.yeelight.SpeedEffect
 import com.github.omarmiatello.yeelight.YeelightDevice
 import com.github.omarmiatello.yeelight.YeelightManager
-import korlibs.time.fromMilliseconds
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 class LightConnection(
@@ -40,7 +38,9 @@ class LightConnection(
     }
 
     suspend fun setColor(rgb: Int) {
-        setColor(rgb / 65536, (rgb % 65536) / 256, rgb % 256)
+        rgb.decomposeRgb().let { (red, green, blue) ->
+            setColor(red, green, blue)
+        }
     }
 
     suspend fun setFlow(flow: LightFlow) {
@@ -52,12 +52,12 @@ class LightConnection(
                         FlowColor(
                             duration = flow.durationMillis.milliseconds,
                             color = maxOf(color, 1),
-                            brightness = color.brightnessLevel()
+                            brightness = color.colorBrightness()
                         ),
                         flow.stayDurationMillis?.let { FlowSleep(it.milliseconds) },
                     )
                 },
-                repeat = 100_000_000, // Int.MAX_VALUE fails for some values
+                repeat = 0, // infinite
                 action = FlowEndAction.stay,
             )
         }
@@ -85,6 +85,14 @@ class LightConnection(
 
     private fun Int.brightnessLevel(): Int =
         maxOf(((toDouble() / 0xff) * 100).toInt(), 1)
+
+    private fun Int.decomposeRgb(): Triple<Int, Int, Int> =
+        Triple(this / 65536, (this % 65536) / 256, this % 256)
+
+    private fun Int.colorBrightness(): Int =
+        decomposeRgb().let { (red, green, blue) ->
+            listOf(red, green, blue).maxOf { it.brightnessLevel() }
+        }
 
     private fun rgb(red: Int, green: Int, blue: Int): Int =
         maxOf((red shl 16) + (green shl 8) + blue, 1)
