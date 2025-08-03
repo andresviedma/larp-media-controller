@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import com.github.andresviedma.larpmediacontroller.LarpController
 import com.github.andresviedma.larpmediacontroller.LarpScene
 import com.github.andresviedma.larpmediacontroller.asyncLauncher
+import com.github.andresviedma.larpmediacontroller.globalLarpScenePosition
 import com.mikepenz.markdown.m2.Markdown
 import korlibs.io.async.launch
 
@@ -212,6 +213,7 @@ fun LarpControllerScreen(larpController: LarpController) {
                 if (page != scenePosition.number - 1) {
                     scenePosition = scenePosition.withValidPosition(page + 1)
                     scene = larpController.getSceneInfo(scenePosition)
+                    globalLarpScenePosition = scenePosition
                 }
                 SceneDetailView(scene)
             }

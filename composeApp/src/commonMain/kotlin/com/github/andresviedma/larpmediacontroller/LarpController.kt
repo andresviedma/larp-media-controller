@@ -134,7 +134,7 @@ class LarpController private constructor(
         }
     }
 
-    suspend fun shortcutAction(keyCode: Int): Boolean {
+    suspend fun shortcutAction(keyCode: Int, position: ScenePosition): Boolean {
         try {
             val action = larp.shortcuts[keyCode] ?: return false
             logger.info { "Shortcut $keyCode - action $action" }
@@ -144,6 +144,12 @@ class LarpController private constructor(
                 "playpause" -> musicController.togglePlay()
                 "end-of-scene" -> endOfScene()
                 "noop" -> {}
+
+                "scene-trigger" -> {
+                    getSceneInfo(position).shortcutAction?.let {
+                        runSceneAction(position, it)
+                    }
+                }
 
                 else -> {
                     // Preset

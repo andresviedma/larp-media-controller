@@ -109,6 +109,7 @@ data class LarpScene(
     val description: String = "",
     val settings: DevicesSettings? = null,
     val actions: Map<String, DeviceAction> = emptyMap(),
+    val shortcutAction: String? = null,
 )
 
 data class ScenePosition(

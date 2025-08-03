@@ -31,7 +31,8 @@ fun App(coroutineContext: CoroutineContext = EmptyCoroutineContext) {
 }
 
 private var globalLarpController: LarpController? = null
+var globalLarpScenePosition: ScenePosition? = null
 
 suspend fun triggerLarpKeyAction(keyCode: Int): Boolean {
-    return globalLarpController?.shortcutAction(keyCode) ?: false
+    return globalLarpController?.shortcutAction(keyCode, globalLarpScenePosition ?: globalLarpController!!.getFirstScenePosition()) ?: false
 }
