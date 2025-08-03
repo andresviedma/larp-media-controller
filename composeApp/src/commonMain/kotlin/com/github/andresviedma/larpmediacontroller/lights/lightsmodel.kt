@@ -16,6 +16,7 @@ data class LightsConfig(
 
 @Serializable
 data class LightFlow(
-    val durationMillis: Long = 1000,
+    val durationMillis: Long = 1000, // duration of the transition to a new color
+    val stayDurationMillis: Long? = null, // duration keeping the color
     val colors: List<Int> = emptyList()
 )

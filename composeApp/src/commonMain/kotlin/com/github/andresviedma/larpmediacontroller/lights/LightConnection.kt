@@ -2,6 +2,7 @@ package com.github.andresviedma.larpmediacontroller.lights
 
 import com.github.omarmiatello.yeelight.FlowColor
 import com.github.omarmiatello.yeelight.FlowEndAction
+import com.github.omarmiatello.yeelight.FlowSleep
 import com.github.omarmiatello.yeelight.SpeedEffect
 import com.github.omarmiatello.yeelight.YeelightDevice
 import com.github.omarmiatello.yeelight.YeelightManager
@@ -46,15 +47,18 @@ class LightConnection(
         getYeelightDevice()?.let { device ->
             device.setPower(isOn = true)
             device.startColorFlow(
-                flowTuples = flow.colors.map { color ->
-                    FlowColor(
-                        duration = Duration.fromMilliseconds(flow.durationMillis),
-                        color = maxOf(color, 1),
-                        brightness = color.brightnessLevel()
+                flowTuples = flow.colors.flatMap { color ->
+                    listOfNotNull(
+                        FlowColor(
+                            duration = flow.durationMillis.milliseconds,
+                            color = maxOf(color, 1),
+                            brightness = color.brightnessLevel()
+                        ),
+                        flow.stayDurationMillis?.let { FlowSleep(it.milliseconds) },
                     )
                 },
-                repeat = Int.MAX_VALUE,
-                action = FlowEndAction.stay
+                repeat = 100_000_000, // Int.MAX_VALUE fails for some values
+                action = FlowEndAction.stay,
             )
         }
     }
